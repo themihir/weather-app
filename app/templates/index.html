@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FastAPI Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .input-group input {
+      flex: 1;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌤️ Weather App</h2>
+    <div class="input-group">
+      <input type="text" id="city" placeholder="Enter city name" />
+      <button onclick="getWeather()">Get Weather</button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("city").value.trim();
+      const resultDiv = document.getElementById("result");
+      if (!city) {
+        resultDiv.innerHTML = "<p>Please enter a city.</p>";
+        return;
+      }
+
+      resultDiv.innerHTML = "<p>Loading...</p>";
+      try {
+        const response = await fetch(`/weather/${encodeURIComponent(city)}`);
+        // if (!response.ok) throw new Error("City not found");
+        if (!response.ok) {
+          // parse error message if available
+            let errMsg = "City not found";
+            try {
+                const errData = await response.json();
+                if (errData.detail) errMsg = errData.detail;
+            } catch (_) {}
+            throw new Error(errMsg);
+          }
+        const data = await response.json();
+
+        resultDiv.innerHTML = `
+        <h3>${data.location.name}</h3>
+        <p>🌡️ Temperature: ${data.temperature}°C (feels like ${data.feels_like}°C)</p>
+        <p>💧 Humidity: ${data.humidity}%</p>
+        <p>💨 Wind Speed: ${data.wind_speed} m/s</p>
+        <p> UV index: ${data.uvindex}</p>
+        <p>🌧 Rain Intensity: ${data.rain_intensity} mm/hr</p>
+      `;
+      } catch (error) {
+        resultDiv.innerHTML = `<p style="color:blue;">${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+FastAPI
+uvicorn
+httpx
+pydantic
+python-dotenv
+requests
+jinja2
