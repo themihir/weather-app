@@ -49,6 +49,12 @@ weather-api-wrapper
    pip install -r requirements.txt
    ```
 
+5. Copy the example environment file and add your API key:
+   ```
+   cp .env.example .env
+   ```
+   Then edit `.env` and set your `WEATHER_API_KEY`.
+
 ## Usage
 
 To run the FastAPI application, execute the following command:
